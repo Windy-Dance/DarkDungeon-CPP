@@ -70,14 +70,42 @@ void printColor(int color, const char *str)
 }
 int DamageCounter(int Min, int Max) {
 	// 用于计算伤害值(由于单一任务原则，只计算伤害值)
-	cout << rand() % (Max - Min + 1) + Min << endl;
 	return rand() % (Max - Min + 1) + Min;
 }
 bool HideCheck(double hideRate) {
-	return false;
+	// 计算是否闪避并返回bool
+	int hTurns = 0;
+	int notH = 0;
+	int tmp2 = 100 * hideRate;
+	// 100次，相对平均
+	for (int t = 0; t < 100; t++) {
+		int tmp = random(100);
+		if (tmp2 > tmp) {
+			hTurns++;
+			continue;
+		}
+		notH++;
+	}
+	
+	return hTurns > notH ? true : false;
 }
 bool CritCheck(double critRate) {
-	return false;
+	// 计算是否暴击并返回bool
+	int cTurns = 0;
+	int notC = 0;
+	int tmp2 = 100 * critRate;
+	// 100次，相对平均
+	for (int t = 0; t < 100; t++) {
+		
+		int tmp = random(100);
+		if (tmp2 > tmp) {
+			cTurns++;
+			continue;
+		}
+		notC++;
+	}
+
+	return cTurns > notC ? true : false;
 }
 // ==================== 角色类 ==================== //
 struct Origin {
@@ -91,46 +119,64 @@ struct Origin {
 	int MAX_ATK = 10;      // 最大攻击
 	int MAGIC_ATK = 10;    // 魔攻
 	int DEFENSE = 0;      // 防御
-	int SHIELD = 10;       // 护盾
+	int SHIELD = 0;       // 护盾
 	int EXP = 0;          // 经验
 	int UP_EXP = 6;       // 升级所需经验
 	int LEVEL = 1;        // 等级
 	int gEXP = 1;
-	double HIDE_RATE = 0.1;  // 闪避率
-	double CRIT_RATE = 0.1;  // 暴击率
+	double HIDE_RATE = 0.01;  // 闪避率
+	double CRIT_RATE = 0.99;  // 暴击率
 	void Attack(Origin &who) {
-	int atk = DamageCounter(MIN_ATK, MAX_ATK);
-	if (who.SHIELD > 0) {
-		// 当攻击目标有护盾的时候的判断
-		if (who.SHIELD > atk) {
-			// 护盾大于攻击时护盾减掉攻击
-			who.SHIELD = who.SHIELD - atk;
-		}
-		else if (who.SHIELD < atk) {
-			// 护盾小于攻击，但是有的时候
-			// 先把护盾抵掉一部分攻击
-			// 之后把生命值扣去剩下的攻击
-			// 完事儿
-			atk = atk - who.SHIELD;
-			who.SHIELD = 0;
-			who.SHIELD = who.SHIELD - atk;
-		}
-		else {
-			// 纯属娱乐
-			cout << "Fuck You, Look What You Doing?";
-		}
+	bool IsHide = HideCheck(who.HIDE_RATE);
+	bool IsCrit = CritCheck(who.CRIT_RATE);
+	int atk;
+	if (IsCrit) {
+		printColor(3, NAME);
+		printColor(3, "暴击!\n");
+		atk = DamageCounter(MIN_ATK, MAX_ATK) * 2;
 	}
 	else {
-		who.HEALTH = who.HEALTH - atk;
+		atk = DamageCounter(MIN_ATK, MAX_ATK);
 	}
-	char temp[1000];
-	sprintf_s(temp, "%d", atk);
-	printColor(1, NAME);
-	printColor(1, "攻击了");
-	printColor(1, who.NAME);
-	printColor(1, "并造成了");
-	printColor(1, temp);
-	printColor(1, "点伤害!\n");
+	if (IsHide) {
+		cout << who.NAME << "闪避了" << NAME << "的攻击!" << endl;
+		return;
+	}
+	else {
+		if (who.SHIELD > 0) {
+			// 当攻击目标有护盾的时候的判断
+			if (who.SHIELD >= atk) {
+				// 护盾大于等于攻击时护盾减掉攻击
+				who.SHIELD = who.SHIELD - atk;
+			}
+			else if (who.SHIELD < atk) {
+				// 护盾小于攻击，但是有的时候
+				// 先把护盾抵掉一部分攻击
+				// 之后把生命值扣去剩下的攻击
+				// 完事儿
+				atk = atk - who.SHIELD;
+				who.SHIELD = 0;
+				who.SHIELD = who.SHIELD - atk;
+			}
+			else {
+				// 纯属娱乐
+				cout << "Fuck You, Look What You Doing?";
+			}
+		}
+		else {
+			who.HEALTH = who.HEALTH - atk;
+		}
+		char temp[1000];
+		sprintf_s(temp, "%d", atk);
+		printColor(1, NAME);
+		printColor(1, "攻击了");
+		printColor(1, who.NAME);
+		printColor(1, "并造成了");
+		printColor(1, temp);
+		printColor(1, "点伤害!\n");
+	}
+	
+	
 }
 	void Show() {
 		HANDLE hd;
@@ -145,7 +191,7 @@ struct Origin {
 		cout << "攻击:" << MIN_ATK << "~" << MAX_ATK;
 		cout << "  魔攻:" << MAGIC_ATK << endl;
 		cout << "防御:" << DEFENSE << "  护盾剩余血量:" << SHIELD << endl;
-		cout << "闪避率" << HIDE_RATE << "%" << "  暴击率:" << CRIT_RATE << "%" <<  endl;
+		cout << "闪避率" << HIDE_RATE*100 << "%" << "  暴击率:" << CRIT_RATE*100 << "%" <<  endl;
 		cout << "等级:" << LEVEL << "  经验:" << EXP << "/" << UP_EXP << endl;
 		SetConsoleTextAttribute(hd,
 			FOREGROUND_RED |
@@ -274,8 +320,10 @@ namespace Chacters {
 
 // ==================== 测试函数 ==================== //
 void TestFunction() {
-	Origin t;
-	t.Show();
+	Origin t1;
+	Origin t2;
+	t1.Attack(t2);
+	t2.Show();
 }
 
 // 主函数
@@ -285,7 +333,5 @@ int main() {
 	system("title 暗黑地牢V0.5.1beta");
 	cout << V << endl << endl;
 	TestFunction();
-	int exitss;
-	cin >> exitss;
 	return 520;
 }
