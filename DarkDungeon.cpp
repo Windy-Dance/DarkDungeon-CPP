@@ -188,14 +188,14 @@ namespace Skills {
 	void AbsoluteDefense() {};
 	void PowerBuff() {};
 	void TotallyAtk() {};
-	void B() {};
-	void B() {};
-	void B() {};
-	void B() {};
-	void B() {};
-	void B() {};
-	void B() {};
-	void B() {};
+	void AtkUp() {};
+	void BackMagic() {};
+	void Mad() {};
+	void WindyDance() {};
+	void BloodFav() {};
+	void DanceStyle() {};
+	void Alchemy() {};
+	void DuccccckGettttt() {};
 	// 接下来是Boss技能
 	void HitGround() {};
 	void FireOn() {};
@@ -210,40 +210,53 @@ namespace Skills {
 }
 namespace Monsters {
 	// 怪物的命名空间
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
+	Origin JackalSoldier;
+	Origin UndeadSkeleton;
+	Origin DarkElement;
+	Origin FlashElement;
+	Origin DM200;
+	Origin DM1500;
+	Origin DM30000;
+	Origin DM_MINI1080;
+	Origin WM_1000ALPHA;
+	Origin WM30000;
+	Origin WM10086;
+	Origin DarkBeliever;
+	Origin Treeist;
+	Origin Shaman;
+	Origin WarriorSoul;
+	Origin IronScavenger;
+	Origin SwampFrog;
+	Origin Soul;
+	Origin IceDragon;
+	Origin BlackDragon;
+	Origin DragonFly;
+	Origin EaterFlower;
+	Origin DwarfBoomer;
+	Origin LostGhost;
+	Origin DungeonWarden;
+	Origin StrangeNinja;
+	Origin MachineKiller;
+	Origin JackalMage;
+	Origin HomelessRanger;
+	Origin SkeletonKing;
+	Origin ZombieWarrior;
+	Origin GodGuard;
+
 
 }
 namespace Bosses {
 	// 头目的命名空间
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
-	Origin B;
+	Origin StoneGiant;
+	Origin DarkWarden;
+	Origin DarkGod;
+	Origin AncientGod;
+	Origin Kraken;
+	Origin DM30000WAR;
+	Origin WM30000WAR;
+	Origin Tengu;
+	Origin DeathHero;
+	Origin ElementMaster;
 
 
 }
